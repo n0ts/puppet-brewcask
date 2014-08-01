@@ -1,12 +1,18 @@
-class brewcask {
+# Public: Install and configure homebrew-cask for use with Boxen.
+#
+# Examples
+#
+#   include brewcask
+
+class brewcask (
+) inherits brewcask::config {
   require homebrew
 
-  # caskroom is hardcoded to '/opt/homebrew-cask/Caskroom'
-  # https://github.com/caskroom/homebrew-cask/blob/master/lib/cask/locations.rb#L11
-  $cask_home = "/opt/homebrew-cask"
-  $cask_room = "${cask_home}/Caskroom"
-
   homebrew::tap { 'caskroom/cask': }
+
+  package { 'brew-cask':
+    require => Homebrew_Tap['caskroom/cask']
+  }
 
   file { $cask_home:
     ensure => directory
@@ -19,8 +25,9 @@ class brewcask {
     require => File[$cask_home]
   }
 
-  package { 'brew-cask':
-    require => Homebrew::Tap['caskroom/cask']
+  boxen::env_script { 'homebrew-cask':
+    content  => template('brewcask/env.sh.erb'),
+    priority => normal
   }
 
   Package['brew-cask'] -> Package <| provider == brewcask |>

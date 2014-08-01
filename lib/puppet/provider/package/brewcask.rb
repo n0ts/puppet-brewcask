@@ -1,3 +1,4 @@
+require "pathname"
 require "puppet/provider/package"
 require "puppet/util/execution"
 
@@ -24,7 +25,13 @@ Puppet::Type.type(:package).provide :brewcask,
   end
 
   def self.caskroom
-    "/opt/homebrew-cask/Caskroom/"
+    cask_home = 
+      if boxen_home = Facter.value(:boxen_home)
+        "#{boxen_home}/homebrew-cask"
+      else
+        "/usr/local/homebrew-cask"
+      end
+    "#{cask_home}/Caskroom"
   end
 
   def self.current(name)
@@ -33,16 +40,16 @@ Puppet::Type.type(:package).provide :brewcask,
   end
 
   def query
-    return unless version = self.class.current(resource[:name])
-    { :ensure => version, :name => resource[:name] }
+    return unless version = self.class.current(@resource[:name])
+    { :ensure => version, :name => @resource[:name] }
   end
 
   def install
-    run "install", resource[:name], *install_options
+    execute [ "brew", "cask", "install", "--no-binaries", @resource[:name], *install_options ].flatten, command_opts
   end
 
   def uninstall
-    run "uninstall", resource[:name]
+    execute [ "brew", "cask", "uninstall", @resource[:name] ].flatten, command_opts
   end
 
   def install_options
@@ -79,16 +86,41 @@ Puppet::Type.type(:package).provide :brewcask,
     end
   end
 
+  def homedir_prefix
+    case Facter[:osfamily].value
+    when "Darwin" then "Users"
+    when "Linux" then "home"
+    else
+      raise "unsupported"
+    end
+  end
+
   def default_user
     Facter.value(:boxen_user) || Facter.value(:id) || "root"
   end
 
+  def s3_host
+    Facter.value(:boxen_s3_host) || 's3.amazonaws.com'
+  end
+
+  def s3_bucket
+    Facter.value(:boxen_s3_bucket) || 'boxen-downloads'
+  end
+
   def command_opts
     @command_opts ||= {
-      :combine            => true,
-      :custom_environment => {
-        "HOME"            => "/Users/#{default_user}",
-        "PATH"            => "#{self.class.home}/bin:/usr/bin:/usr/sbin:/bin:/sbin"
+      :combine               => true,
+      :custom_environment    => {
+        "HOME"               => "/#{homedir_prefix}/#{default_user}",
+        "PATH"               => "#{self.class.home}/bin:/usr/bin:/usr/sbin:/bin:/sbin",
+        "CFLAGS"             => "-O2",
+        "CPPFLAGS"           => "-O2",
+        "CXXFLAGS"           => "-O2",
+        "BOXEN_S3_HOST"      => "#{s3_host}",
+        "BOXEN_S3_BUCKET"    => "#{s3_bucket}",
+        "HOMEBREW_ROOT"      => self.class.home,
+        "HOMEBREW_CACHE"     => "#{self.class.home}/../cache/homebrew",
+        "HOMEBREW_CASK_OPTS" => "--caskroom=#{self.class.caskroom}",
       },
       :failonfail         => true,
       :uid                => default_user
