@@ -13,10 +13,6 @@ class brewcask (
 
   homebrew::tap { 'caskroom/cask': }
 
-  package { 'brew-cask':
-    require => Homebrew_Tap['caskroom/cask']
-  }
-
   file { $cask_home:
     ensure => directory
   }
