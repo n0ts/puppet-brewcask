@@ -6,7 +6,7 @@ Puppet::Type.type(:package).provide :brewcask,
   :parent => Puppet::Provider::Package do
   include Puppet::Util::Execution
 
-  confine  :operatingsystem => :darwin
+  confine :operatingsystem => :darwin
 
   has_feature :versionable
   has_feature :install_options
@@ -17,11 +17,7 @@ Puppet::Type.type(:package).provide :brewcask,
   end
 
   def self.home
-    if boxen_home = Facter.value(:boxen_home)
-      "#{boxen_home}/homebrew"
-    else
-      "/usr/local/homebrew"
-    end
+    Facter.value(:homebrew_root)
   end
 
   def self.caskroom
@@ -121,9 +117,12 @@ Puppet::Type.type(:package).provide :brewcask,
         "HOMEBREW_ROOT"      => self.class.home,
         "HOMEBREW_CACHE"     => "#{self.class.home}/../cache/homebrew",
         "HOMEBREW_CASK_OPTS" => "--caskroom=#{self.class.caskroom}",
+        "HOMEBREW_NO_EMOJI"  => "Yes",
       },
-      :failonfail         => true,
-      :uid                => default_user
+      :failonfail            => true,
     }
+    # Only try to run as another user if Puppet is run as root.
+    opts[:uid] = default_user if Process.uid == 0
+    opts
   end
 end

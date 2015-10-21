@@ -1,4 +1,4 @@
-# Public: Install and configure homebrew-cask for use with Boxen.
+# Public: Install and configure brewcask for use with Boxen.
 #
 # Examples
 #
@@ -7,6 +7,9 @@
 class brewcask (
 ) inherits brewcask::config {
   require homebrew
+
+  $cask_home = $::brewcask_root
+  $cask_room = "${cask_home}/Caskroom"
 
   homebrew::tap { 'caskroom/cask': }
 
@@ -25,9 +28,14 @@ class brewcask (
     require => File[$cask_home]
   }
 
-  boxen::env_script { 'homebrew-cask':
+  package { 'brew-cask':
+    require  => Homebrew::Tap['caskroom/cask'],
+    provider => homebrew
+  }
+
+  boxen::env_script { 'brewcask':
     content  => template('brewcask/env.sh.erb'),
-    priority => normal
+    priority => highest,
   }
 
   Package['brew-cask'] -> Package <| provider == brewcask |>
