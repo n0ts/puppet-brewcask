@@ -24,6 +24,11 @@ class brewcask (
     require => File[$cask_home]
   }
 
+  boxen::env_script { 'homebrew-cask':
+    content  => template('brewcask/env.sh.erb'),
+    priority => normal
+  }
+
   package { 'brew-cask':
     require  => Homebrew::Tap['caskroom/cask'],
     provider => homebrew

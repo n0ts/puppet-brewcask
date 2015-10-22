@@ -21,13 +21,7 @@ Puppet::Type.type(:package).provide :brewcask,
   end
 
   def self.caskroom
-    cask_home = 
-      if boxen_home = Facter.value(:boxen_home)
-        "#{boxen_home}/homebrew-cask"
-      else
-        "/usr/local/homebrew-cask"
-      end
-    "#{cask_home}/Caskroom"
+    "#{Facter[:brewcask_root].value}/Caskroom"
   end
 
   def self.current(name)
@@ -104,7 +98,7 @@ Puppet::Type.type(:package).provide :brewcask,
   end
 
   def command_opts
-    @command_opts ||= {
+    opts = {
       :combine               => true,
       :custom_environment    => {
         "HOME"               => "/#{homedir_prefix}/#{default_user}",
