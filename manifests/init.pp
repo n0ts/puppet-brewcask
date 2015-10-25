@@ -10,6 +10,7 @@ class brewcask (
 
   $cask_home = $::brewcask_root
   $cask_room = "${cask_home}/Caskroom"
+  $cask_bin = "${cask_home}/bin"
 
   homebrew::tap { 'caskroom/cask': }
 
@@ -19,6 +20,12 @@ class brewcask (
 
   # This prevents typing root password the first time a cask is installed
   file { $cask_room:
+    ensure  => directory,
+    before  => Package['brew-cask'],
+    require => File[$cask_home]
+  }
+
+  file { $cask_bin:
     ensure  => directory,
     before  => Package['brew-cask'],
     require => File[$cask_home]
