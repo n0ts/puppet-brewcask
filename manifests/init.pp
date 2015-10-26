@@ -8,27 +8,23 @@ class brewcask (
 ) inherits brewcask::config {
   require homebrew
 
-  $cask_home = $::brewcask_root
-  $cask_room = "${cask_home}/Caskroom"
-  $cask_bin = "${cask_home}/bin"
-
   homebrew::tap { 'caskroom/cask': }
 
-  file { $cask_home:
+  file { $brewcask::config::cask_home:
     ensure => directory
   }
 
   # This prevents typing root password the first time a cask is installed
-  file { $cask_room:
+  file { $brewcask::config::cask_room:
     ensure  => directory,
     before  => Package['brew-cask'],
-    require => File[$cask_home]
+    require => File[$brewcask::config::cask_home]
   }
 
-  file { $cask_bin:
+  file { $brewcask::config::cask_bin:
     ensure  => directory,
     before  => Package['brew-cask'],
-    require => File[$cask_home]
+    require => File[$brewcask::config::cask_home]
   }
 
   boxen::env_script { 'homebrew-cask':
