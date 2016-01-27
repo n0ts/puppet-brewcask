@@ -39,7 +39,7 @@ Puppet::Type.type(:package).provide :brewcask,
   end
 
   def install
-    execute [ "brew", "cask", "install", "--no-binaries", @resource[:name], *install_options ].flatten, command_opts
+    execute [ "brew", "cask", "install", @resource[:name], *install_options ].flatten, command_opts
   end
 
   def uninstall
