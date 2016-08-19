@@ -9,5 +9,4 @@ class brewcask::config {
 
   $cask_home = $::brewcask_root
   $cask_room = "${cask_home}/Caskroom"
-  $cask_bin = "${cask_home}/bin"
 }

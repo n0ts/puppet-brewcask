@@ -24,10 +24,6 @@ Puppet::Type.type(:package).provide :brewcask,
     "#{Facter[:brewcask_root].value}/Caskroom"
   end
 
-  def self.caskbin
-    "#{Facter[:brewcask_root].value}/bin"
-  end
-
   def self.current(name)
     caskdir = Pathname.new "#{caskroom}/#{name}"
     caskdir.directory? && caskdir.children.size >= 1 && caskdir.children.sort.last.to_s
