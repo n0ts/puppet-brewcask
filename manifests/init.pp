@@ -24,6 +24,4 @@ class brewcask (
     content  => template('brewcask/env.sh.erb'),
     priority => highest,
   }
-
-  Package['brew-cask'] -> Package <| provider == brewcask |>
 }
