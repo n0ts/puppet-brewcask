@@ -4,13 +4,15 @@
 #
 #   include brewcask
 
-class brewcask {
+class brewcask (
+) inherits brewcask::config {
   require homebrew
 
-  $cask_home = $::brewcask_root
-  $cask_room = "${cask_home}/Caskroom"
-
   homebrew::tap { 'caskroom/cask': }
+
+  package { 'brew-cask':
+    require => Homebrew_Tap['caskroom/cask']
+  }
 
   file { $cask_home:
     ensure => directory
