@@ -4,5 +4,12 @@ Facter.add(:brewcask_root) do
   # Explicit, low weight makes this easily overridable
   has_weight 1
 
-  setcode { '/opt/homebrew-cask' }
+  $brewcask_root =
+    if boxen_home = Facter.value(:boxen_home)
+      "#{boxen_home}/homebrew-cask"
+    else
+      '/opt/homebrew-cask'
+    end
+
+  setcode { $brewcask_root }
 end
