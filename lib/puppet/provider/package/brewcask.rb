@@ -24,6 +24,10 @@ Puppet::Type.type(:package).provide :brewcask,
     "#{Facter[:brewcask_root].value}/Caskroom"
   end
 
+  def self.caskbin
+    "#{Facter[:brewcask_root].value}/bin"
+  end
+
   def self.current(name)
     caskdir = Pathname.new "#{caskroom}/#{name}"
     caskdir.directory? && caskdir.children.size >= 1 && caskdir.children.sort.last.to_s
@@ -114,6 +118,7 @@ Puppet::Type.type(:package).provide :brewcask,
       },
       :failonfail            => true,
     }
+
     # Only try to run as another user if Puppet is run as root.
     opts[:uid] = default_user if Process.uid == 0
     opts
