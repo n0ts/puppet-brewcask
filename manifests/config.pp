@@ -7,6 +7,7 @@
 class brewcask::config {
   include boxen::config
 
-  $cask_home = "${boxen::config::home}/homebrew-cask"
+  $cask_home = $::brewcask_root
   $cask_room = "${cask_home}/Caskroom"
+  $cask_bin = "${cask_home}/bin"
 }
