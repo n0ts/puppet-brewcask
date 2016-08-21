@@ -30,16 +30,16 @@ Puppet::Type.type(:package).provide :brewcask,
   end
 
   def query
-    return unless version = self.class.current(@resource[:name])
-    { :ensure => version, :name => @resource[:name] }
+    return unless version = self.class.current(resource[:name])
+    { :ensure => version, :name => resource[:name] }
   end
 
   def install
-    execute [ "brew", "cask", "install", "--no-binaries", @resource[:name], *install_options ].flatten, command_opts
+    run "install", resource[:name], "--no-binaries", *install_options
   end
 
   def uninstall
-    execute [ "brew", "cask", "uninstall", @resource[:name] ].flatten, command_opts
+    run "uninstall", resource[:name]
   end
 
   def install_options
@@ -104,7 +104,6 @@ Puppet::Type.type(:package).provide :brewcask,
       },
       :failonfail            => true,
     }
-
     # Only try to run as another user if Puppet is run as root.
     opts[:uid] = default_user if Process.uid == 0
     opts
