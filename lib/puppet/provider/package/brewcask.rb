@@ -21,7 +21,7 @@ Puppet::Type.type(:package).provide :brewcask,
   end
 
   def self.caskroom
-    "#{Facter[:brewcask_root].value}/Caskroom"
+    "#{Facter[:homebrew_root].value}/Caskroom"
   end
 
   def self.current(name)
@@ -100,7 +100,7 @@ Puppet::Type.type(:package).provide :brewcask,
         "CXXFLAGS"           => "-O2",
         "HOMEBREW_ROOT"      => self.class.home,
         "HOMEBREW_CACHE"     => "#{self.class.home}/../cache/homebrew",
-        "HOMEBREW_CASK_OPTS" => "--caskroom=#{self.class.caskroom}",
+        "HOMEBREW_CASK_OPTS" => "--appdir=/Applications --fontdir=/Library/Fonts",
       },
       :failonfail            => true,
     }
