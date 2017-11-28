@@ -11,6 +11,9 @@ def default_test_facts
   {
     :boxen_home    => "/test/boxen",
     :boxen_srcdir  => "/test/boxen/src",
+    :boxen_repodir =>  File.join(File.dirname(__FILE__), 'fixtures'),
+    :boxen_repo_url_template => "https://github.com/%s",
     :boxen_user    => "testuser",
+    :homebrew_root => '/opt/boxen/homebrew',
   }
 end

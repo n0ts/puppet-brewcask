@@ -34,7 +34,7 @@ GEM
       gettext (>= 3.0.2)
       locale
     hiera (3.4.2)
-    highline (1.7.8)
+    highline (1.7.10)
     json_pure (1.8.6)
     librarian-puppet (2.2.3)
       librarianp (>= 0.6.3)
@@ -72,7 +72,7 @@ GEM
       gettext-setup (~> 0.11)
       minitar
       semantic_puppet (~> 1.0)
-    puppetlabs_spec_helper (2.5.0)
+    puppetlabs_spec_helper (2.5.1)
       mocha (~> 1.0)
       puppet-lint (~> 2.0)
       puppet-syntax (~> 2.0)

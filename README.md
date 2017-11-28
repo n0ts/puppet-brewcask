@@ -15,7 +15,7 @@ package { 'firefox': provider => 'brewcask' }
 
 ## Required Puppet Modules
 
- - `homebrew`, >= 1.10.0
+ - `homebrew` >= 1.10.0
 
 ## Work in progress
 
