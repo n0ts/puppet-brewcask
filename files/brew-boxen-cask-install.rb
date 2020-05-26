@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift("#{HOMEBREW_LIBRARY_PATH}/cask/lib")
-require "hbc"
+require "cask/cmd"
+require "cask/utils"
 
-Hbc::CLI::Install.new(ARGV).run
+Cask::Cmd::Install.run(ARGV)
