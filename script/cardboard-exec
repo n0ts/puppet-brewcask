@@ -16,7 +16,7 @@ BUNDLE_ARGS="--binstubs $BIN --path $BUNDLE --quiet"
 rm -rf {$BIN,$BUNDLE/config}
 bundle config path $BUNDLE
 bundle install $BUNDLE_ARGS
-bundle binstubs $GEM_BIN --path $BIN
+bundle binstubs $GEM_BIN --path $BIN --force
 
 bundle exec cardboard bootstrap
 exec bundle exec cardboard "$SCRIPT" "$@"
