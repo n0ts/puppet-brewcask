@@ -7,13 +7,16 @@ cd $(dirname "$0")/..
 
 BUNDLE=.bundle
 BIN=$BUNDLE/binstubs
+GEM_BIN=librarian-puppet
 SCRIPT=$(basename "$0")
 
 BUNDLE_ARGS="--binstubs $BIN --path $BUNDLE --quiet"
 [ "cibuild" = "$SCRIPT" ] && BUNDLE_ARGS="$BUNDLE_ARGS --no-quiet"
 
 rm -rf {$BIN,$BUNDLE/config}
+bundle config path $BUNDLE
 bundle install $BUNDLE_ARGS
+bundle binstubs $GEM_BIN --path $BIN
 
 bundle exec cardboard bootstrap
 exec bundle exec cardboard "$SCRIPT" "$@"
