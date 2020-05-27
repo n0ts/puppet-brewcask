@@ -45,12 +45,7 @@ Puppet::Type.type(:package).provide :brewcask, :parent => Puppet::Provider::Pack
   end
 
   def install
-    install_cmd = ['brew']
-    if install_options.any?
-      install_cmd << 'cask install'
-    else
-      install_cmd << 'boxen-cask-install'
-    end
+    install_cmd = ['brew', 'cask', 'install']
     install_cmd << install_options if install_options.any?
     install_cmd << resource[:name]
 

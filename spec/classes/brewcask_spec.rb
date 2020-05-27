@@ -6,6 +6,5 @@ describe 'brewcask' do
   it do
     should contain_class('boxen::config')
     should contain_class('homebrew')
-
   end
 end
