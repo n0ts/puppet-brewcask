@@ -85,22 +85,32 @@ Puppet::Type.type(:package).provide :brewcask, :parent => Puppet::Provider::Pack
     end
   end
 
+  def homedir_prefix
+    case Facter[:osfamily].value
+    when 'Darwin' then 'Users'
+    when 'Linux' then 'home'
+    else
+      raise 'unsupported'
+    end
+  end
+
   def default_user
     Facter.value(:boxen_user) || Facter.value(:id) || 'root'
   end
 
   def command_opts
     opts = {
-      :combine              => true,
-      :custom_environment   => {
-        'HOME'              => "/Users/#{default_user}",
-        'PATH'              => "#{self.class.home}/bin:/usr/bin:/usr/sbin:/bin:/sbin",
-        'HOMEBREW_NO_EMOJI' => 'Yes',
+      :combine            => true,
+      :custom_environment => {
+        'HOME'                    => "/#{homedir_prefix}/#{default_user}",
+        'PATH'                    => "#{self.class.home}/bin:/usr/bin:/usr/sbin:/bin:/sbin",
+        'HOMEBREW_NO_EMOJI'       => '1',
+        'HOMEBREW_NO_AUTO_UPDATE' => '1',
       },
-      :failonfail           => true,
+      :failonfail         => true,
+      :uid                => default_user,
+      :gid                => default_group,
     }
-    # Only try to run as another user if Puppet is run as root.
-    opts[:uid] = default_user if Process.uid == 0
     opts
   end
 end
