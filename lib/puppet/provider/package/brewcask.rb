@@ -98,6 +98,11 @@ Puppet::Type.type(:package).provide :brewcask, :parent => Puppet::Provider::Pack
     Facter.value(:boxen_user) || Facter.value(:id) || 'root'
   end
 
+  def default_group
+    group = Etc.getpwnam(default_user).gid || 'wheel'
+    Etc.getgrgid(group).gid
+  end
+
   def command_opts
     opts = {
       :combine            => true,
